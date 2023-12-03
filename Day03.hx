@@ -8,18 +8,19 @@ class Day03 {
     }
 
 
+    static function isNum(char:Int):Bool {
+        return "0".code <= char && char <= "9".code;
+    }
+
     static function checkNumInEngine(x:Int, len:Int, y:Int, input:Array<String>):Bool {
         for (yPos in y-1...y+2) {
-            if (0 <= yPos && yPos < input.length) {
-                var line = input[yPos];
-                for (xPos in x-1...x+len+1) {
-                    if (0 < xPos && xPos < line.length) {
-                        var c = line.charAt(xPos);
-                        if (c != "." && !("0".charCodeAt(0) <= c.charCodeAt(0) && c.charCodeAt(0) <= "9".charCodeAt(0))) {
-                            return true;
-                        }
-                   }
-                }
+            if (yPos < 0 || yPos >= input.length) continue;
+            var line = input[yPos];
+            for (xPos in x-1...x+len+1) {
+                if (xPos < 0 || xPos >= line.length) continue;
+
+                var c = line.charAt(xPos);
+                if (c != "." && !isNum(c.charCodeAt(0))) return true;
             }
         }
 
@@ -36,62 +37,60 @@ class Day03 {
 
                 var match = epsilon.matched(0);
                 var pos = epsilon.matchedPos();
+
                 var isIn = checkNumInEngine(pos.pos+xPos, pos.len, y, input);
-                xPos += match.length+pos.pos;
-                if (isIn) {
-                    sum += Std.parseInt(match);
-                }
+                if (isIn) sum += Std.parseInt(match);
+
                 line = epsilon.matchedRight();
+                xPos += match.length + pos.pos;
             }
-            y += 1;
+            y++;
         }
         return sum;
     }
 
 
     static function matchNum(x:Int, line:String):{pos:Int, len:Int} {
-        var c = line.charCodeAt(x);
         var p = {pos: 0, len: 0};
-        while (x > -1 && "0".charCodeAt(0) <= c && c <= "9".charCodeAt(0)) {
-            x -= 1;
+        var c = line.charCodeAt(x);
+        if (!("0".code <= c && c <= "9".code)) return p;
+           
+
+        while (x > -1 && isNum(c)) {
+            x--;
             c = line.charCodeAt(x);
         }
-        x += 1;
+        x++;
         p.pos = x;
 
         var len = 0;
         var c = line.charCodeAt(x+len);
-        while (x+len < line.length && "0".charCodeAt(0) <= c && c <= "9".charCodeAt(0)) {
-            len += 1;
+        while (x + len < line.length && isNum(c)) {
+            len++;
             c = line.charCodeAt(x+len);
         }
         p.len = len;
 
         return p;
     }
-    
+
     static function findGearRatio(x:Int, y:Int, input:Array<String>):Int {
         var ratio = 1;
         var nums = 0;
         for (yPos in y-1...y+2) {
-            if (0 <= yPos && yPos < input.length) {
-                var line = input[yPos];
-                if (0 < x && x < line.length-1) {
-                    
-                    var xPos = x-1;
-                    while (xPos < x+2) {
-                        var c = line.charCodeAt(xPos);
-                        if ("0".charCodeAt(0) <= c && c <= "9".charCodeAt(0)) {
-                            var p = matchNum(xPos, line);
-                            if (p.len > 0) {
-                                ratio *= Std.parseInt(line.substr(p.pos, p.len));
-                                nums +=1;
-                            }
-                            xPos = p.pos + p.len;
-                        }
-                        xPos += 1;
-                    }
+            if ( yPos < 0 || yPos >= input.length) continue;
+
+            var line = input[yPos];
+            var xPos = x-1;
+            while (xPos < x+2) {
+                var c = line.charCodeAt(xPos);
+                var p = matchNum(xPos, line);
+                if (p.len > 0) {
+                    ratio *= Std.parseInt(line.substr(p.pos, p.len));
+                    nums++;
+                    xPos = p.pos + p.len;
                 }
+                xPos++;
             }
 
         }
@@ -100,20 +99,19 @@ class Day03 {
     }
 
     static function part2(input:Array<String>):Int {
-        trace(input);
         var sum = 0;
         var y = 0;
         
         for (line in input) {
             var x = 0;
             for (char in line) {
-                if (char == "*".charCodeAt(0)) {
+                if (char == "*".code) {
                     var r = findGearRatio(x, y, input);
                     sum += r;
                 }
-                x = x +1;
+                x++;
             }
-            y = y +1;
+            y++;
         }
 
         return sum;
@@ -126,6 +124,7 @@ class Day03 {
             var line = iterator.readLine();
             input.push(line);
         }
+
         iterator.close();
         return input;
     }
