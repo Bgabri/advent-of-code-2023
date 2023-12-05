@@ -1,5 +1,5 @@
 using StringTools;
-// haxe --interp --main Dayxx.hx
+// haxe --interp --main Day05.hx
 
 class DayXX {
     static function main() {
@@ -7,23 +7,21 @@ class DayXX {
         trace("solution to part 2: " + part2(loadFile("inputs/XX.txt")));    
     }
 
-    static function part1(input:Array<Array<Int>>):Int {
+    static function part1(input:Array<String>):Int {
         trace(input);
         return 0;
     }
-    static function part2(input:Array<Array<Int>>):Int {
+    static function part2(input:Array<String>):Int {
         return 0;
     }
 
-    static function loadFile(file:String):Array<Array<Int>> {
-        var input:Array<Array<Int>> = [];
+    static function loadFile(file:String):Array<String> {
+        var input:Array<String> = [];
         var iterator = sys.io.File.read(file, false);
         
         while (!iterator.eof()){
             var line = iterator.readLine();
-            var inp = line.split("");
-            var inp2:Array<Int> = inp.map(v -> Std.parseInt(v));
-            input.push(inp2);
+            input.push(line);
         }
         iterator.close();
         return input;
