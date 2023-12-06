@@ -1,5 +1,5 @@
 using StringTools;
-// haxe --interp --main Day05.hx
+// haxe --interp --main DayXX.hx
 
 class DayXX {
     static function main() {
