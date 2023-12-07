@@ -9,10 +9,16 @@ class DayXX {
 
     static function part1(input:Array<String>):Int {
         trace(input);
+        for (line in input) {
+
+        }
         return 0;
     }
     static function part2(input:Array<String>):Int {
         return 0;
+        for (line in input) {
+            
+        }
     }
 
     static function loadFile(file:String):Array<String> {
